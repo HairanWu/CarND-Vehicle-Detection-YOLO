@@ -1,0 +1,3 @@
+python yad2k.py yolo.cfg yolo.weights model_data/yolo.h5
+
+python yad2k.py tiny-yolo-voc.cfg tiny-yolo-voc.weights model_data/yolo_tiny.h5

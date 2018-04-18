@@ -421,3 +421,8 @@ line_clip.resize(height=360).speedx(5).to_gif('resources/project.gif')
 ```
 
 ![](resources/project.gif)
+
+## Reference
+[1] https://github.com/allanzelener/YAD2K
+[2] https://github.com/qqwweee/keras-yolo3
+[3] https://pjreddie.com/media/files/papers/YOLOv3.pdf

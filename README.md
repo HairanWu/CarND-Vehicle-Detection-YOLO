@@ -357,27 +357,27 @@ for i, image in enumerate(test_images):
 ```
 
 
-![png](output_20_0.png)
+![png](resources/output_20_0.png)
 
 
 
-![png](output_20_1.png)
+![png](resources/output_20_1.png)
 
 
 
-![png](output_20_2.png)
+![png](resources/output_20_2.png)
 
 
 
-![png](output_20_3.png)
+![png](resources/output_20_3.png)
 
 
 
-![png](output_20_4.png)
+![png](resources/output_20_4.png)
 
 
 
-![png](output_20_5.png)
+![png](resources/output_20_5.png)
 
 
 ## Test Video

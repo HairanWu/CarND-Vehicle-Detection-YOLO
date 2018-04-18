@@ -338,11 +338,6 @@ md.load_model()
     model_data/yolo.h5 model, 9 anchors, and 80 classes loaded.
     Model input size:(416, 416).
     
-
-    d:\ProgramData\Anaconda3\envs\carnd-term1\lib\site-packages\keras\models.py:252: UserWarning: No training configuration found in save file: the model was *not* compiled. Compile it manually.
-      warnings.warn('No training configuration found in save file: '
-    
-
 ## Test Images
 
 

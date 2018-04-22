@@ -395,26 +395,9 @@ from IPython.display import HTML
 project_source = "test_videos/project_video.mp4"
 project_output = "test_videos_output/project_video_output.mp4"
 
-
-## To speed up the testing process you may want to try your pipeline on a shorter subclip of the video
-## To do so add .subclip(start_second,end_second) to the end of the line below
-## Where start_second and end_second are integer values representing the start and end of the subclip
-## You may also uncomment the following line for a subclip of the first 5 seconds
-##clip1 = VideoFileClip("test_videos/solidWhiteRight.mp4").subclip(0,5)
-# L = Vechiledectect()
-
 clip1 = VideoFileClip(project_source)
 line_clip = clip1.fl_image(md.detect_image) #NOTE: this function expects color images!!
 %time line_clip.write_videofile(project_output, audio=False)
-```
-
-
-```python
-HTML("""
-<video width="1080" height="640" controls>
-  <source src="{0}">
-</video>
-""".format(project_output))
 ```
 
 

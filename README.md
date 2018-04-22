@@ -111,8 +111,8 @@ def box_iou(box1,box2):
 
 The feature map of yolo ouput can be divided into (grid_w,grid_h,nb_box,4.cood+1.confidence+classes).
 
-
 ![](resources/network_output.jpg)
+
 
 ### Bounding boxes with dimension priors and location prediction
 

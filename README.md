@@ -1,7 +1,7 @@
 
 # Vehicle Detection Project
 
-This project uses Yolov3 model to detect vechicles by keras.
+This project uses **Yolov3** model to detect vechicles by keras.
 
 Using Convert_Yolo_model_to_keras.ipynb to convert yolo model in keras.
 
@@ -381,9 +381,9 @@ for i, image in enumerate(test_images):
 
 Detect vehicle in real time:
 
-This keras and python project is 20fps in GTX1080ti testing.
+This keras and python project is **20fps** in GTX1080ti testing.
 
-Original darknet source is 30fps in GTX1080ti testing.
+Original darknet source is **30fps** in GTX1080ti testing.
 
 ```python
 video_source = "test_videos/project_video.mp4"

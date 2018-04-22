@@ -109,7 +109,7 @@ def box_iou(box1,box2):
 
 ### Decode network out
 
-The feature map of yolo ouput can be divided into (grid_w,grid_h,nb_box,4.cood+1.confidence+classes).
+The feature map of yolo ouput can be divided into **(grid_w,grid_h,nb_box,4.cood+1.confidence+classes)**.
 
 ![](resources/network_output.jpg)
 
@@ -210,11 +210,15 @@ def random_colors(N, bright=True):
 
 ## YOLO Class
 
+Define YOLO class to load parameters and test images or videos.
+
+Default environment is shown as below: 
+
 Converted Keras model is in 'model_data/yolo.h5'.
 
-Anchors path is in 'model_data/yolov3_anchors.txt'.
+**Anchors path** is in 'model_data/yolov3_anchors.txt'.
 
-Classes path is 'model_data/coco_classes.txt'.
+**Classes path** is 'model_data/coco_classes.txt'.
 
 **obj_threshold** is a threshold to recognize any object or not.
 

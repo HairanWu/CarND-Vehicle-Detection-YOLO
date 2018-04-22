@@ -210,6 +210,15 @@ def random_colors(N, bright=True):
 
 ## YOLO Class
 
+Converted Keras model is in 'model_data/yolo.h5'.
+
+Anchors path is in 'model_data/yolov3_anchors.txt'.
+
+Classes path is 'model_data/coco_classes.txt'.
+
+**obj_threshold** is a threshold to recognize any object or not.
+
+**nms_threshold** is a key varibale to NMS flitering.
 
 ```python
 class YOLO(object):

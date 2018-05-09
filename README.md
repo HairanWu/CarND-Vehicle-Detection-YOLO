@@ -366,10 +366,6 @@ md.load_model()
     Model input size:(416, 416).
     
 
-    d:\ProgramData\Anaconda3\envs\carnd-term1\lib\site-packages\keras\models.py:252: UserWarning: No training configuration found in save file: the model was *not* compiled. Compile it manually.
-      warnings.warn('No training configuration found in save file: '
-    
-
 ## Test Images
 
 ### Vechile detection without nms filter
@@ -431,19 +427,19 @@ for i, image in enumerate(test_images):
 
 
 
-![png](output_23_2.png)
+![png](resources/output_23_2.png)
 
 
 
-![png](output_23_3.png)
+![png](resources/output_23_3.png)
 
 
 
-![png](output_23_4.png)
+![png](resources/output_23_4.png)
 
 
 
-![png](output_23_5.png)
+![png](resources/output_23_5.png)
 
 
 ## Test Video

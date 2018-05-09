@@ -386,27 +386,27 @@ for i, image in enumerate(test_images):
 ```
 
 
-![png](output_21_0.png)
+![png](resources/output_21_0.png)
 
 
 
-![png](output_21_1.png)
+![png](resources/output_21_1.png)
 
 
 
-![png](output_21_2.png)
+![png](resources/output_21_2.png)
 
 
 
-![png](output_21_3.png)
+![png](resources/output_21_3.png)
 
 
 
-![png](output_21_4.png)
+![png](resources/output_21_4.png)
 
 
 
-![png](output_21_5.png)
+![png](resources/output_21_5.png)
 
 
 ### Vechile detection with nms filter
@@ -423,11 +423,11 @@ for i, image in enumerate(test_images):
 ```
 
 
-![png](output_23_0.png)
+![png](resources/output_23_0.png)
 
 
 
-![png](output_23_1.png)
+![png](resources/output_23_1.png)
 
 
 

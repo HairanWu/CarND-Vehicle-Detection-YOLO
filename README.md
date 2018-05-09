@@ -3,7 +3,7 @@
 
 This project uses **Yolov3** model to detect vechicles by keras.
 
-Using Convert_Yolo_model_to_keras.ipynb to convert yolo model in keras.
+Using **Convert_Yolo_model_to_keras.ipynb** to convert origina darknet-based yolo model in keras.
 
 ## Import Packages
 
@@ -34,6 +34,23 @@ import matplotlib.pyplot as plt
 ## Function
 
 ### intersection-over-union Calculation
+
+Intersection over Union(IOU) is an evaluation metric used to measure the accuracy of an object detector on a particular dataset.
+
+Any algorithm that provides predicted bounding boxes as output can be evaluated using IoU.
+
+In order to apply Intersection over Union to evaluate an (arbitrary) object detector we need:
+
+(1) The **ground-truth** bounding boxes (i.e., the hand labeled bounding boxes from the testing set that specify where in the image our object is).
+
+(2) The predicted bounding boxes from our model.
+As long as we have these two sets of bounding boxes we can apply Intersection over Union.
+
+Below there is a visual example of a ground-truth bounding box(i.e.,**A**) versus a predicted bounding box(i.e.,**B**):
+
+Predicted bounding boxes that heavily overlap with the ground-truth bounding boxes have higher scores than those with less overlap. This makes Intersection over Union an excellent metric for evaluating custom object detectors.
+
+In this project,IOU function is used to filter predicted bounding boxes on one object.
 
 ![](resources/interval.jpg)
 
@@ -109,10 +126,10 @@ def box_iou(box1,box2):
 
 ### Decode network out
 
-The feature map of yolo ouput can be divided into **(grid_w,grid_h,nb_box,4.cood+1.confidence+classes)**.
+The feature map of yolo ouput can be divided into (grid_w,grid_h,nb_box,4.cood+1.confidence+classes).
+
 
 ![](resources/network_output.jpg)
-
 
 ### Bounding boxes with dimension priors and location prediction
 
@@ -160,12 +177,14 @@ def decode_netout(networkouput, anchors, nb_class, obj_threshold = 0.1,nms_thres
 
 ### NMS（non maximum suppression）
 
-Non maximum suppression for Object Detection is to filter redundant bouding box sorted by every class.
+Non maximum suppression for Object Detection is to filter redundant bouding box sorted by every class using IOU.
 
 
 ```python
 def nms_filter(boxes, nb_class, obj_threshold = 0.1, nms_threshold = 0.3):
+    #iterage each class
     for c in range(nb_class):
+        #sorting by confidence
         sorted_indices = list(reversed(np.argsort([box[5][c] for box in boxes])))
 
         for i in range(len(sorted_indices)):
@@ -177,6 +196,7 @@ def nms_filter(boxes, nb_class, obj_threshold = 0.1, nms_threshold = 0.3):
                 for j in range(i+1, len(sorted_indices)):
                     index_j = sorted_indices[j]
 
+                    #filter bounding boxes
                     if box_iou(boxes[index_i], boxes[index_j]) >= nms_threshold:
                         boxes[index_j][5][c] = 0
 
@@ -185,6 +205,8 @@ def nms_filter(boxes, nb_class, obj_threshold = 0.1, nms_threshold = 0.3):
     
     return boxes   
 ```
+
+### Random colors
 
 
 ```python
@@ -210,19 +232,6 @@ def random_colors(N, bright=True):
 
 ## YOLO Class
 
-Define YOLO class to load parameters and test images or videos.
-
-Default environment is shown as below: 
-
-Converted Keras model is in 'model_data/yolo.h5'.
-
-**Anchors path** is in 'model_data/yolov3_anchors.txt'.
-
-**Classes path** is 'model_data/coco_classes.txt'.
-
-**obj_threshold** is a threshold to recognize any object or not.
-
-**nms_threshold** is a key varibale to NMS flitering.
 
 ```python
 class YOLO(object):
@@ -262,7 +271,7 @@ class YOLO(object):
         
         print('Model input size:{}.'.format(self.model_image_size))
     
-    def detect_image(self, image):
+    def detect_image(self, image, nms_filter_enable = True):
         image_data = cv2.resize(image, self.model_image_size)
         image_data = image_data/255.0
         image_data = np.expand_dims(image_data, 0)  # Add batch dimension.
@@ -282,7 +291,8 @@ class YOLO(object):
 
             results.extend(result)
         
-        results = nms_filter(results, len(self.class_names), self.obj_threshold,self.nms_threshold)
+        if nms_filter_enable:
+            results = nms_filter(results, len(self.class_names), self.obj_threshold,self.nms_threshold)
             
         show_images = np.copy(image)
         colors = random_colors(len(self.class_names))
@@ -297,16 +307,18 @@ class YOLO(object):
             w = w *   self.model_image_size[1] * (image.shape[1] / self.model_image_size[1])
             h = h *  self.model_image_size[0] * (image.shape[0] / self.model_image_size[0])
 
-            xmin = int(x - w/2.0)
-            xmax = int(x + w/2.0)
-            ymin = int(y - h/2.0)
-            ymax = int(y + h/2.0)
+            #fix bouding box within image shape
+            xmin = max(np.floor(x - w/2.0 + 0.5).astype(int),0)
+            xmax = min(np.floor(x + w/2.0 + 0.5).astype(int),image.shape[1])
+            ymin = max(np.floor(y - h/2.0 + 0.5).astype(int),0)
+            ymax = min(np.floor(y + h/2.0 + 0.5).astype(int),image.shape[0])
 
             color = colors[int(classone)]
             label = '{}:{:.1f}%'.format(self.class_names[classone],confidence*100)
 
             cv2.rectangle(show_images,(xmin,ymin),(xmax,ymax),color, 3)
-            cv2.putText(show_images,label,(xmin,ymin-10),cv2.FONT_HERSHEY_COMPLEX,1,color,2)
+            if nms_filter_enable:
+                cv2.putText(show_images,label,(xmin,ymin-10),cv2.FONT_HERSHEY_COMPLEX,1,color,2)
             
         return show_images
 
@@ -353,7 +365,51 @@ md.load_model()
     model_data/yolo.h5 model, 9 anchors, and 80 classes loaded.
     Model input size:(416, 416).
     
+
+    d:\ProgramData\Anaconda3\envs\carnd-term1\lib\site-packages\keras\models.py:252: UserWarning: No training configuration found in save file: the model was *not* compiled. Compile it manually.
+      warnings.warn('No training configuration found in save file: '
+    
+
 ## Test Images
+
+### Vechile detection without nms filter
+
+
+```python
+test_images = [plt.imread(path) for path in glob.glob('test_images/test*.jpg')]
+
+for i, image in enumerate(test_images):
+    vechilefinds = md.detect_image(image,nms_filter_enable = False)
+
+    fig = plt.figure(figsize=(16, 16))
+    plt.imshow(vechilefinds)
+```
+
+
+![png](output_21_0.png)
+
+
+
+![png](output_21_1.png)
+
+
+
+![png](output_21_2.png)
+
+
+
+![png](output_21_3.png)
+
+
+
+![png](output_21_4.png)
+
+
+
+![png](output_21_5.png)
+
+
+### Vechile detection with nms filter
 
 
 ```python
@@ -367,27 +423,27 @@ for i, image in enumerate(test_images):
 ```
 
 
-![png](resources/output_20_0.png)
+![png](output_23_0.png)
 
 
 
-![png](resources/output_20_1.png)
+![png](output_23_1.png)
 
 
 
-![png](resources/output_20_2.png)
+![png](output_23_2.png)
 
 
 
-![png](resources/output_20_3.png)
+![png](output_23_3.png)
 
 
 
-![png](resources/output_20_4.png)
+![png](output_23_4.png)
 
 
 
-![png](resources/output_20_5.png)
+![png](output_23_5.png)
 
 
 ## Test Video
@@ -397,6 +453,7 @@ Detect vehicle in real time:
 This keras and python project is **20fps** in GTX1080ti testing.
 
 Original darknet source is **30fps** in GTX1080ti testing.
+
 
 ```python
 video_source = "test_videos/project_video.mp4"
@@ -413,9 +470,26 @@ from IPython.display import HTML
 project_source = "test_videos/project_video.mp4"
 project_output = "test_videos_output/project_video_output.mp4"
 
+
+## To speed up the testing process you may want to try your pipeline on a shorter subclip of the video
+## To do so add .subclip(start_second,end_second) to the end of the line below
+## Where start_second and end_second are integer values representing the start and end of the subclip
+## You may also uncomment the following line for a subclip of the first 5 seconds
+##clip1 = VideoFileClip("test_videos/solidWhiteRight.mp4").subclip(0,5)
+# L = Vechiledectect()
+
 clip1 = VideoFileClip(project_source)
 line_clip = clip1.fl_image(md.detect_image) #NOTE: this function expects color images!!
 %time line_clip.write_videofile(project_output, audio=False)
+```
+
+
+```python
+HTML("""
+<video width="1080" height="640" controls>
+  <source src="{0}">
+</video>
+""".format(project_output))
 ```
 
 
@@ -424,10 +498,3 @@ line_clip.resize(height=360).speedx(5).to_gif('resources/project.gif')
 ```
 
 ![](resources/project.gif)
-
-## Reference
-[1] https://github.com/allanzelener/YAD2K
-
-[2] https://github.com/qqwweee/keras-yolo3
-
-[3] https://pjreddie.com/media/files/papers/YOLOv3.pdf
